@@ -1,0 +1,2 @@
+<?php
+// for backward compatible

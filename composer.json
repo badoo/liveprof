@@ -1,0 +1,29 @@
+{
+  "name": "badoo/liveprof",
+  "type": "library",
+  "description": "Live profiler for auto running with custom frequency",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Badoo Development"
+    }
+  ],
+  "require": {
+    "php": ">=5.4",
+    "doctrine/dbal": "<2.9",
+    "psr/log": "~1.0",
+    "ext-json": "*",
+    "ext-zlib": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.0|~5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Badoo\\LiveProfiler\\": "src/Badoo/LiveProfiler"}
+  },
+  "autoload-dev": {
+    "psr-4": {"unit\\Badoo\\": "tests/unit/Badoo"}
+  }
+}
