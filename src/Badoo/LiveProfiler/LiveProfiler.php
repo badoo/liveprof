@@ -12,8 +12,15 @@ use Psr\Log\LoggerInterface;
 
 class LiveProfiler
 {
+    CONST MODE_DB = 'db';
+    CONST MODE_FILES = 'files';
+
     /** @var LiveProfiler */
     protected static $instance;
+    /** @var string */
+    protected $mode = self::MODE_DB;
+    /** @var string */
+    protected $path = '';
     /** @var Connection */
     protected $Conn;
     /** @var LoggerInterface */
@@ -43,30 +50,32 @@ class LiveProfiler
 
     /**
      * LiveProfiler constructor.
-     * @param string $connection_string
+     * @param string $connection_string_or_path
+     * @param string $mode
      */
-    public function __construct($connection_string = '')
+    public function __construct($connection_string_or_path = '', $mode = self::MODE_DB)
     {
-        if ($connection_string) {
-            $this->connection_string = $connection_string;
-        } else {
-            $this->connection_string = getenv('LIVE_PROFILER_CONNECTION_URL');
-        }
+        $this->mode = $mode;
 
         $this->app = 'Default';
         $this->label = $this->getAutoLabel();
         $this->datetime = date('Y-m-d H:i:s');
 
-
         $this->detectProfiler();
         $this->Logger = new Logger();
         $this->DataPacker = new DataPacker();
+
+        if ($mode === self::MODE_DB) {
+            $this->connection_string = $connection_string_or_path ?: getenv('LIVE_PROFILER_CONNECTION_URL');
+        } else {
+            $this->setPath($connection_string_or_path ?: getenv('LIVE_PROFILER_PATH'));
+        }
     }
 
-    public static function getInstance($connection_string = '')
+    public static function getInstance($connection_string = '', $mode = self::MODE_DB)
     {
         if (self::$instance === null) {
-            self::$instance = new static($connection_string);
+            self::$instance = new static($connection_string, $mode);
         }
 
         return self::$instance;
@@ -119,14 +128,7 @@ class LiveProfiler
         }
 
         $this->last_profile_data = $data;
-        $packed_data = $this->DataPacker->pack($data);
-
-        $result = false;
-        try {
-            $result = $this->save($this->app, $this->label, $this->datetime, $packed_data);
-        } catch (DBALException $Ex) {
-            $this->Logger->error('Error in insertion profile data: ' . $Ex->getMessage());
-        }
+        $result = $this->save($this->app, $this->label, $this->datetime, $data);
 
         if (!$result) {
             $this->Logger->warning('Can\'t insert profile data');
@@ -217,6 +219,46 @@ class LiveProfiler
         }
 
         return true;
+    }
+
+    /**
+     * @param string $mode
+     * @return $this
+     */
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMode()
+    {
+        return $this->mode;
+    }
+
+    /**
+     * @param string $path
+     * @return $this
+     */
+    public function setPath($path)
+    {
+        if (!is_dir($path)) {
+            $this->Logger->error('Directory ' . $path . ' does not exists');
+        }
+
+        $this->path = $path;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
     }
 
     /**
@@ -380,21 +422,64 @@ class LiveProfiler
      * @param string $app
      * @param string $label
      * @param string $datetime
-     * @param string $data
+     * @param array $data
      * @return bool
-     * @throws DBALException
      */
     protected function save($app, $label, $datetime, $data)
     {
-        return (bool)$this->getConnection()->insert(
-            'details',
-            [
-                'app' => $app,
-                'label' => $label,
-                'perfdata' => $data,
-                'timestamp' => $datetime
-            ]
-        );
+        if ($this->mode === self::MODE_DB) {
+            return $this->saveToDB($app, $label, $datetime, $data);
+        }
+
+        return $this->saveToFile($app, $label, $datetime, $data);
+    }
+
+    /**
+     * @param string $app
+     * @param string $label
+     * @param string $datetime
+     * @param array $data
+     * @return bool
+     */
+    protected function saveToDB($app, $label, $datetime, $data)
+    {
+        $packed_data = $this->DataPacker->pack($data);
+
+        try {
+            return (bool)$this->getConnection()->insert(
+                'details',
+                [
+                    'app' => $app,
+                    'label' => $label,
+                    'perfdata' => $packed_data,
+                    'timestamp' => $datetime
+                ]
+            );
+        } catch (DBALException $Ex) {
+            $this->Logger->error('Error in insertion profile data: ' . $Ex->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * @param string $app
+     * @param string $label
+     * @param string $datetime
+     * @param array $data
+     * @return bool
+     */
+    private function saveToFile($app, $label, $datetime, $data)
+    {
+        $path = sprintf('%s/%s/%s', $this->path, $app, base64_encode($label));
+
+        if (!is_dir($path) && !mkdir($path, 0755, true) && !is_dir($path)) {
+            $this->Logger->error('Directory "'. $path .'" was not created');
+            return false;
+        }
+
+        $filename = sprintf('%s/%s.json', $path, strtotime($datetime));
+        $packed_data = $this->DataPacker->pack($data);
+        return (bool)file_put_contents($filename, $packed_data);
     }
 
     /**

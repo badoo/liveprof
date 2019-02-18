@@ -239,9 +239,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
             ->setConstructorArgs(['sqlite:///:memory:'])
             ->setMethods(['save'])
             ->getMock();
-        $ProfilerMock->method('save')->willReturnCallback(function () {
-            throw new \Doctrine\DBAL\DBALException('Error in insertion');
-        });
+        $ProfilerMock->method('save')->willReturn(false);
 
         /** @var \Badoo\LiveProfiler\LiveProfiler $ProfilerMock */
         $ProfilerMock->setLogger($LoggerMock);
@@ -285,16 +283,19 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
             ->setMethods([])
             ->getMock();
 
+        $test_mode = 'test_mode';
         $test_app = 'test_app';
         $test_label = 'test_label';
         $test_datetime = 'test_datetime';
         $test_divider = 1;
         $test_total_divider = 2;
         $test_connection_string = 'test_connection_string';
+        $test_path = 'test_path';
 
         $Profiler = new \Badoo\LiveProfiler\LiveProfiler('sqlite:///:memory:');
 
         $Profiler
+            ->setMode($test_mode)
             ->setApp($test_app)
             ->setLabel($test_label)
             ->setDateTime($test_datetime)
@@ -303,8 +304,10 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
             ->setLogger($LoggerMock)
             ->setDataPacker($DataPacker)
             ->setConnection($ConnectionMock)
-            ->setConnectionString($test_connection_string);
+            ->setConnectionString($test_connection_string)
+            ->setPath($test_path);
 
+        $mode = $this->getProtectedProperty($Profiler, 'mode');
         $app = $this->getProtectedProperty($Profiler, 'app');
         $label = $this->getProtectedProperty($Profiler, 'label');
         $datetime = $this->getProtectedProperty($Profiler, 'datetime');
@@ -314,7 +317,10 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         $DataPackerNew = $this->getProtectedProperty($Profiler, 'DataPacker');
         $Connection = $this->getProtectedProperty($Profiler, 'Conn');
         $connection_string = $this->getProtectedProperty($Profiler, 'connection_string');
+        $path = $this->getProtectedProperty($Profiler, 'path');
 
+        self::assertEquals($test_mode, $mode);
+        self::assertEquals($test_mode, $Profiler->getMode());
         self::assertEquals($test_app, $app);
         self::assertEquals($test_app, $Profiler->getApp());
         self::assertEquals($test_label, $label);
@@ -328,6 +334,8 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         self::assertSame($ConnectionMock, $Connection);
         self::assertSame([], $Profiler->getLastProfileData());
         self::assertSame($test_connection_string, $connection_string);
+        self::assertSame($test_path, $path);
+        self::assertSame($test_path, $Profiler->getPath());
     }
 
     public function testGetInstance()
@@ -378,7 +386,21 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         $Profiler = new \Badoo\LiveProfiler\LiveProfiler('sqlite:///:memory:');
         $Profiler->createTable();
 
-        $result = $this->invokeMethod($Profiler, 'save', ['app', 'label', 'datetime', 'data']);
+        $result = $this->invokeMethod($Profiler, 'save', ['app', 'label', '1970-01-01', ['data']]);
+        self::assertTrue($result);
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function testSaveToFile()
+    {
+        $Profiler = new \Badoo\LiveProfiler\LiveProfiler(
+            '/tmp',
+            \Badoo\LiveProfiler\LiveProfiler::MODE_FILES
+        );
+
+        $result = $this->invokeMethod($Profiler, 'saveToFile', ['app', 'label', '1970-01-01', ['data']]);
         self::assertTrue($result);
     }
 

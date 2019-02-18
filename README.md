@@ -52,6 +52,7 @@ php composer.phar require badoo/liveprof
 LIVE_PROFILER_CONNECTION_URL=mysql://db_user:db_password@db_mysql:3306/Profiler?charset=utf8 php vendor/badoo/liveprof/bin/install.php
 ```
 
+* It's also possible to save profiling result into files. To do it prepare a directory with write permissions.
 * Init a profiler before working code in the project entry point (usually public/index.php).
 
 You should add a profiler call before your code to start profiling with default parameters:
@@ -69,7 +70,9 @@ There is a full list of methods you can use to change options:
 
 // Start profiling
 \Badoo\LiveProfiler\LiveProfiler::getInstance()
+    ->setMode(\Badoo\LiveProfiler\LiveProfiler::MODE_DB) // optional, MODE_DB - save profiles to db, MODE_FILES - save profiles to files
     ->setConnectionString('mysql://db_user:db_password@db_mysql:3306/Profiler?charset=utf8') // optional, you can also set the connection url in the environment variable LIVE_PROFILER_CONNECTION_URL
+    ->setPath('/app/data/') // optional, path to save profiles, you can also set the file path in the environment variable LIVE_PROFILER_PATH
     ->setApp('Site1') // optional, current app name to use one profiler in several apps, "Default" by default
     ->setLabel('users') // optional, the request name, by default the url path or script name in cli
     ->setDivider(700) // optional, profiling starts for 1 of 700 requests with the same app and label, 1000 by default
@@ -104,6 +107,7 @@ Environment Variables
 =====================
 
 `LIVE_PROFILER_CONNECTION_URL`: [url](https://www.doctrine-project.org/projects/doctrine-dbal/en/2.8/reference/configuration.html#configuration) for the database connection
+`LIVE_PROFILER_PATH`: path to save profiles is \Badoo\LiveProfiler\LiveProfiler::MODE_FILES mode
 
 Work flow
 =========

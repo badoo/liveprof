@@ -12,10 +12,10 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 
 use Badoo\LiveProfiler\LiveProfiler;
 
-// Create source database in the memory
-$Profiler = new LiveProfiler('sqlite:///:memory:');
+// Initialize profiler with file mode
+$path = '/tmp';
+$Profiler = new LiveProfiler($path, LiveProfiler::MODE_FILES);
 $Profiler->setDivider(1);
-$Profiler->createTable();
 
 // Run this method before profiled code
 $Profiler->start();
@@ -26,9 +26,12 @@ testCode(1);
 
 // Run this method after profiled code
 $profiling_result = $Profiler->end();
-print_r($Profiler->getLastProfileData());
 
 echo $profiling_result ? "Profiling successfully finished\n" : "Error in profiling\n";
+
+echo "Profiling data from the file:\n";
+$filename = sprintf('%s/%s/%s/%s.json', $path, $Profiler->getApp(), base64_encode($Profiler->getLabel()), strtotime($Profiler->getDateTime()));
+echo file_get_contents($filename) . "\n";
 
 /**
  * Test functions
