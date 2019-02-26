@@ -188,9 +188,7 @@ class LiveProfiler
         };
 
         $this->end_callback = function () {
-            $sampling_data = xhprof_sample_disable();
-
-            return $this->convertSampleDataToCommonFormat($sampling_data);
+            return $this->convertSampleDataToCommonFormat(xhprof_sample_disable());
         };
 
         return true;

@@ -433,6 +433,55 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
     /**
      * @throws \ReflectionException
      */
+    public function testUseXhprofSample()
+    {
+        $ProfilerMock = $this->getMockBuilder('\Badoo\LiveProfiler\LiveProfiler')
+            ->disableOriginalConstructor()
+            ->setMethods(['__construct'])
+            ->getMock();
+
+        /** @var \Badoo\LiveProfiler\LiveProfiler $ProfilerMock */
+        $result = $ProfilerMock->useXhprofSample();
+
+        self::assertTrue($result);
+        $start_callback = $this->getProtectedProperty($ProfilerMock, 'start_callback');
+        $end_callback = $this->getProtectedProperty($ProfilerMock, 'end_callback');
+        self::assertNotEmpty($start_callback);
+        self::assertInternalType('callable', $start_callback);
+        self::assertNotEmpty($end_callback);
+        self::assertInternalType('callable', $end_callback);
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function testUseXhprofSampleAfterStart()
+    {
+        $LoggerMock = $this->getMockBuilder('\Badoo\LiveProfiler\Logger')
+            ->disableOriginalConstructor()
+            ->setMethods(['warning'])
+            ->getMock();
+        $LoggerMock->method('warning')->willReturn(true);
+        /** @var \Psr\LOg\LoggerInterface $LoggerMock */
+
+        $ProfilerMock = $this->getMockBuilder('\Badoo\LiveProfiler\LiveProfiler')
+            ->disableOriginalConstructor()
+            ->setMethods(['__construct'])
+            ->getMock();
+
+        $this->setProtectedProperty($ProfilerMock, 'is_enabled', true);
+
+        /** @var \Badoo\LiveProfiler\LiveProfiler $ProfilerMock */
+        $result = $ProfilerMock
+            ->setLogger($LoggerMock)
+            ->useXhprofSample();
+
+        self::assertFalse($result);
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
     public function testUseXhprof()
     {
         $ProfilerMock = $this->getMockBuilder('\Badoo\LiveProfiler\LiveProfiler')
