@@ -407,6 +407,32 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
     /**
      * @throws \ReflectionException
      */
+    public function testConvertSampleDataToCommonFormat()
+    {
+        $Profiler = new \Badoo\LiveProfiler\LiveProfiler('sqlite:///:memory:');
+
+        define('XHPROF_SAMPLING_BEGIN', 1000);
+
+        $sampling_data = [
+            1001 => 'main()==>func'
+        ];
+        $result = $this->invokeMethod($Profiler, 'convertSampleDataToCommonFormat', [$sampling_data]);
+        $expected = [
+            'main()' => [
+                'ct' => 1,
+                'wt' => 1000000
+            ],
+            'main()==>func' => [
+                'ct' => 1,
+                'wt' => 1000000
+            ],
+        ];
+        self::assertEquals($expected, $result);
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
     public function testUseXhprof()
     {
         $ProfilerMock = $this->getMockBuilder('\Badoo\LiveProfiler\LiveProfiler')

@@ -4,6 +4,12 @@
 
 There are next changes:
 
+## 1.2.0
+
+There are next changes:
+
+- added xhprof_sample support
+
 ## 1.1.0
 
 There are next changes:

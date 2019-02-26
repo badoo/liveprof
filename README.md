@@ -83,6 +83,7 @@ There is a full list of methods you can use to change options:
     ->setStartCallback($profiler_start_callback) // optional, set it if you use custom profiler
     ->setEndCallback($profiler_profiler_callback) // optional, set it if you use custom profiler
     ->start();
+\Badoo\LiveProfiler\LiveProfiler::getInstance()->useXhprofSample(); // optional, force use xhprof in sampling mode
 ```
 
 If you want to change the Label during running (for instance, after you got some information in the router or controller) you can call:
@@ -128,19 +129,28 @@ docker build -t badoo/liveprof .
 docker run badoo/liveprof
 ```
 
+or you can build a docker container with **xhprof** using sampling:
+```bash 
+docker build -f DockerfileSamples -t badoo/liveprof .
+docker run badoo/liveprof
+```
+
 or you can build a docker container with **tideways** extension:
 ```bash 
 docker build -f DockerfileTidyWays -t badoo/liveprof .
+docker run badoo/liveprof
 ```
 
 or **uprofiler** extension:
 ```bash 
 docker build -f DockerfileUprofiler -t badoo/liveprof .
+docker run badoo/liveprof
 ```
 
 or latest hhvm with included  **xhprof** extension:
 ```bash
 docker build -f DockerfileHHVM -t badoo/liveprof .
+docker run badoo/liveprof
 ```
 
 If your server has php version 7.0 or later it's better to use [Tideways](https://github.com/tideways/php-profiler-extension) as profiler.

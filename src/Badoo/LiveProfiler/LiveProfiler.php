@@ -172,6 +172,71 @@ class LiveProfiler
         return true;
     }
 
+    public function useXhprofSample()
+    {
+        if ($this->is_enabled) {
+            $this->Logger->warning('can\'t change profiler after profiling started');
+            return false;
+        }
+
+        ini_set('xhprof.sampling_interval',100000);
+        ini_set('xhprof.sampling_depth',200);
+
+        $this->start_callback = function () {
+            define('XHPROF_SAMPLING_BEGIN', microtime(true));
+            xhprof_sample_enable();
+        };
+
+        $this->end_callback = function () {
+            $sampling_data = xhprof_sample_disable();
+
+            return $this->convertSampleDataToCommonFormat($sampling_data);
+        };
+
+        return true;
+    }
+
+    protected function convertSampleDataToCommonFormat(array $sampling_data)
+    {
+        $result_data = [
+            'main()' => [
+                'ct' => 1,
+                'wt' => 0,
+            ]
+        ];
+        $prev_time = XHPROF_SAMPLING_BEGIN;
+        $prev_callstack = null;
+        foreach ($sampling_data as $time => $callstack) {
+            $wt = (int)(($time - $prev_time) * 1000000);
+            $functions = explode('==>', $callstack);
+            $prev_i = 0;
+            $func_cnt = count($functions);
+            for ($i = 1; $i < $func_cnt; $i++) {
+                $key = $functions[$prev_i] . '==>' . $functions[$i];
+
+                if (!isset($result_data[$key])) {
+                    $result_data[$key] = [
+                        'ct' => 0,
+                        'wt' => 0,
+                    ];
+                }
+
+                $result_data[$key]['wt'] += $wt;
+                if ($i === $func_cnt - 1) {
+                    if ($callstack !== $prev_callstack) {
+                        $result_data[$key]['ct']++;
+                    }
+                    $result_data['main()']['wt'] += $wt;
+                }
+            }
+
+            $prev_time = $time;
+            $prev_callstack = $callstack;
+        }
+
+        return $result_data;
+    }
+
     public function useTidyWays()
     {
         if ($this->is_enabled) {
