@@ -179,8 +179,13 @@ class LiveProfiler
             return false;
         }
 
-        ini_set('xhprof.sampling_interval',100000);
-        ini_set('xhprof.sampling_depth',200);
+        if (!ini_get('xhprof.sampling_interval')) {
+            ini_set('xhprof.sampling_interval', 10000);
+        }
+
+        if (!ini_get('xhprof.sampling_depth')) {
+            ini_set('xhprof.sampling_depth', 200);
+        }
 
         $this->start_callback = function () {
             define('XHPROF_SAMPLING_BEGIN', microtime(true));
