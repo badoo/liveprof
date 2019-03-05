@@ -414,18 +414,24 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         define('XHPROF_SAMPLING_BEGIN', 1000);
 
         $sampling_data = [
-            1001 => 'main()==>func'
+            1001 => 'main()==>func',
+            1002 => 'main()==>func==>func2',
+            1003 => 'main()'
         ];
         $result = $this->invokeMethod($Profiler, 'convertSampleDataToCommonFormat', [$sampling_data]);
         $expected = [
             'main()' => [
-                'ct' => 1,
-                'wt' => 1000000
+                'ct' => 3,
+                'wt' => 3000000
             ],
             'main()==>func' => [
+                'ct' => 2,
+                'wt' => 2000000
+            ],
+            'func==>func2' => [
                 'ct' => 1,
                 'wt' => 1000000
-            ],
+            ]
         ];
         self::assertEquals($expected, $result);
     }

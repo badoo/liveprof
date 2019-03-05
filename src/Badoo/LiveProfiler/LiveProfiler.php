@@ -201,18 +201,22 @@ class LiveProfiler
 
     protected function convertSampleDataToCommonFormat(array $sampling_data)
     {
-        $result_data = [
-            'main()' => [
-                'ct' => 1,
-                'wt' => 0,
-            ]
-        ];
+        $result_data = [];
         $prev_time = XHPROF_SAMPLING_BEGIN;
-        $prev_callstack = null;
         foreach ($sampling_data as $time => $callstack) {
             $wt = (int)(($time - $prev_time) * 1000000);
             $functions = explode('==>', $callstack);
             $prev_i = 0;
+            $main_key = $functions[$prev_i];
+            if (!isset($result_data[$main_key])) {
+                $result_data[$main_key] = [
+                    'ct' => 0,
+                    'wt' => 0,
+                ];
+            }
+            $result_data[$main_key]['ct'] ++;
+            $result_data[$main_key]['wt'] += $wt;
+
             $func_cnt = count($functions);
             for ($i = 1; $i < $func_cnt; $i++) {
                 $key = $functions[$prev_i] . '==>' . $functions[$i];
@@ -225,16 +229,12 @@ class LiveProfiler
                 }
 
                 $result_data[$key]['wt'] += $wt;
-                if ($i === $func_cnt - 1) {
-                    if ($callstack !== $prev_callstack) {
-                        $result_data[$key]['ct']++;
-                    }
-                    $result_data['main()']['wt'] += $wt;
-                }
+                $result_data[$key]['ct']++;
+
+                $prev_i = $i;
             }
 
             $prev_time = $time;
-            $prev_callstack = $callstack;
         }
 
         return $result_data;
