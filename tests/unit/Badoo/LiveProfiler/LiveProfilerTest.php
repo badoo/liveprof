@@ -291,6 +291,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         $test_total_divider = 2;
         $test_connection_string = 'test_connection_string';
         $test_path = 'test_path';
+        $test_api_key = 'test_api_key';
 
         $Profiler = new \Badoo\LiveProfiler\LiveProfiler('sqlite:///:memory:');
 
@@ -305,7 +306,8 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
             ->setDataPacker($DataPacker)
             ->setConnection($ConnectionMock)
             ->setConnectionString($test_connection_string)
-            ->setPath($test_path);
+            ->setPath($test_path)
+            ->setApiKey($test_api_key);
 
         $mode = $this->getProtectedProperty($Profiler, 'mode');
         $app = $this->getProtectedProperty($Profiler, 'app');
@@ -318,6 +320,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         $Connection = $this->getProtectedProperty($Profiler, 'Conn');
         $connection_string = $this->getProtectedProperty($Profiler, 'connection_string');
         $path = $this->getProtectedProperty($Profiler, 'path');
+        $api_key = $this->getProtectedProperty($Profiler, 'api_key');
 
         self::assertEquals($test_mode, $mode);
         self::assertEquals($test_mode, $Profiler->getMode());
@@ -336,6 +339,8 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         self::assertSame($test_connection_string, $connection_string);
         self::assertSame($test_path, $path);
         self::assertSame($test_path, $Profiler->getPath());
+        self::assertSame($test_api_key, $api_key);
+        self::assertSame($test_api_key, $Profiler->getApiKey());
     }
 
     public function testGetInstance()
@@ -400,7 +405,22 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
             \Badoo\LiveProfiler\LiveProfiler::MODE_FILES
         );
 
-        $result = $this->invokeMethod($Profiler, 'saveToFile', ['app', 'label', '1970-01-01', ['data']]);
+        $result = $this->invokeMethod($Profiler, 'save', ['app', 'label', '1970-01-01', ['data']]);
+        self::assertTrue($result);
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function testSendToAPI()
+    {
+        $Profiler = new \Badoo\LiveProfiler\LiveProfiler(
+            '',
+            \Badoo\LiveProfiler\LiveProfiler::MODE_API
+        );
+        $Profiler->setApiKey('70366397-97d6-41be-a83c-e9e649c824e1');
+
+        $result = $this->invokeMethod($Profiler, 'save', ['app', 'label', '1970-01-01', ['data']]);
         self::assertTrue($result);
     }
 

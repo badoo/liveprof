@@ -14,6 +14,7 @@ class LiveProfiler
 {
     CONST MODE_DB = 'db';
     CONST MODE_FILES = 'files';
+    CONST MODE_API = 'api';
 
     /** @var LiveProfiler */
     protected static $instance;
@@ -21,6 +22,10 @@ class LiveProfiler
     protected $mode = self::MODE_DB;
     /** @var string */
     protected $path = '';
+    /** @var string */
+    protected $api_key = '';
+    /** @var string */
+    protected $url = 'http://liveprof.org/api';
     /** @var Connection */
     protected $Conn;
     /** @var LoggerInterface */
@@ -67,6 +72,12 @@ class LiveProfiler
 
         if ($mode === self::MODE_DB) {
             $this->connection_string = $connection_string_or_path ?: getenv('LIVE_PROFILER_CONNECTION_URL');
+        } elseif ($mode === self::MODE_API) {
+            if ($connection_string_or_path) {
+                $this->url = $connection_string_or_path;
+            } elseif (getenv('LIVE_PROFILER_API_URL')) {
+                $this->url = getenv('LIVE_PROFILER_API_URL');
+            }
         } else {
             $this->setPath($connection_string_or_path ?: getenv('LIVE_PROFILER_PATH'));
         }
@@ -330,6 +341,24 @@ class LiveProfiler
     }
 
     /**
+     * @param string $api_key
+     * @return $this
+     */
+    public function setApiKey($api_key)
+    {
+        $this->api_key = $api_key;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiKey()
+    {
+        return $this->api_key;
+    }
+
+    /**
      * @param string $app
      * @return $this
      */
@@ -499,7 +528,34 @@ class LiveProfiler
             return $this->saveToDB($app, $label, $datetime, $data);
         }
 
+        if ($this->mode === self::MODE_API) {
+            return $this->sendToAPI($app, $label, $datetime, $data);
+        }
+
         return $this->saveToFile($app, $label, $datetime, $data);
+    }
+
+    /**
+     * @param string $app
+     * @param string $label
+     * @param string $datetime
+     * @param array $data
+     * @return bool
+     */
+    protected function sendToAPI($app, $label, $datetime, $data)
+    {
+        $data = $this->DataPacker->pack($data);
+        $api_key = $this->api_key;
+        $curl_handle = curl_init();
+        curl_setopt($curl_handle,CURLOPT_URL,$this->url);
+        curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl_handle, CURLOPT_POST, 1);
+        curl_setopt($curl_handle, CURLOPT_POSTFIELDS, http_build_query(compact('api_key', 'app', 'label', 'datetime', 'data')));
+        curl_exec($curl_handle);
+        $http_code = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
+        curl_close($curl_handle);
+
+        return $http_code === 200;
     }
 
     /**

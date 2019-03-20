@@ -4,6 +4,12 @@
 
 There are next changes:
 
+## 1.3.0
+
+There are next changes:
+
+- added sending profile to api
+
 ## 1.2.0
 
 There are next changes:
