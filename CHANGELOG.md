@@ -4,6 +4,12 @@
 
 There are next changes:
 
+## 1.3.1
+
+There are next changes:
+
+- added example of sending profiling results to api
+
 ## 1.3.0
 
 There are next changes:

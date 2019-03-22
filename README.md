@@ -45,14 +45,15 @@ Installation
 php composer.phar require badoo/liveprof
 ```
 
-* Prepare a database server. You can use any driver described [here](https://www.doctrine-project.org/projects/doctrine-dbal/en/2.8/reference/configuration.html#configuration) or implement the custom one
-* Run a script to configure database. This script creates "details" table 
+* If you use DB mode you need to prepare a database server. You can use any driver described [here](https://www.doctrine-project.org/projects/doctrine-dbal/en/2.8/reference/configuration.html#configuration) or implement the custom one
+* If you use DB mode you need run a script to configure database. This script creates "details" table 
 
 ```bash
 LIVE_PROFILER_CONNECTION_URL=mysql://db_user:db_password@db_mysql:3306/Profiler?charset=utf8 php vendor/badoo/liveprof/bin/install.php
 ```
 
 * It's also possible to save profiling result into files. To do it prepare a directory with write permissions.
+* To use API mode you need to visit [liveprof.org](http://liveprof.org/) , sign in and get API key. 
 * Init a profiler before working code in the project entry point (usually public/index.php).
 
 You should add a profiler call before your code to start profiling with default parameters:
@@ -154,6 +155,11 @@ docker run badoo/liveprof
 or latest hhvm with included  **xhprof** extension:
 ```bash
 docker build -f DockerfileHHVM -t badoo/liveprof .
+docker run badoo/liveprof
+```
+or if you want to use API with included  **xhprof** extension:
+```bash
+docker build -f DockerfileUseApi -t badoo/liveprof .
 docker run badoo/liveprof
 ```
 
