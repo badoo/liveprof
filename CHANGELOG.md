@@ -9,6 +9,7 @@ There are next changes:
 There are next changes:
 
 - changed version of doctrine/dbal
+- added php 7.3 support
 
 ## 1.3.1
 
