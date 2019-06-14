@@ -4,6 +4,12 @@
 
 There are next changes:
 
+## 1.3.2
+
+There are next changes:
+
+- changed version of doctrine/dbal
+
 ## 1.3.1
 
 There are next changes:
