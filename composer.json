@@ -1,7 +1,7 @@
 {
   "name": "badoo/liveprof",
   "type": "library",
-  "description": "Live profiler for auto running with custom frequency",
+  "description": "A performance monitoring system for running on live sites",
   "minimum-stability": "stable",
   "license": "MIT",
   "authors": [
