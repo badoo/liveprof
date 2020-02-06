@@ -53,7 +53,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         $ProfilerMock
             ->setDivider(1)
             ->setStartCallback(function () {
-            });
+        });
 
         $result = $ProfilerMock->start();
         self::assertTrue($result);
@@ -98,7 +98,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         $ProfilerMock
             ->setTotalDivider(1)
             ->setStartCallback(function () {
-            });
+        });
 
         $result = $ProfilerMock->start();
         self::assertTrue($result);
@@ -124,8 +124,8 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         $ProfilerMock
             ->setDataPacker($DataPacker)
             ->setEndCallback(function () {
-                return ['end result'];
-            });
+            return ['end result'];
+        });
 
         $result = $ProfilerMock->end();
         self::assertTrue($result);

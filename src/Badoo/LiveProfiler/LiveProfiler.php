@@ -173,7 +173,7 @@ class LiveProfiler
     {
         if ($this->is_enabled) {
             $this->Logger->warning('can\'t change profiler after profiling started');
-            return false;
+            return $this;
         }
 
         $this->start_callback = function () {
@@ -184,14 +184,14 @@ class LiveProfiler
             return xhprof_disable();
         };
 
-        return true;
+        return $this;
     }
 
     public function useXhprofSample()
     {
         if ($this->is_enabled) {
             $this->Logger->warning('can\'t change profiler after profiling started');
-            return false;
+            return $this;
         }
 
         if (!ini_get('xhprof.sampling_interval')) {
@@ -211,7 +211,7 @@ class LiveProfiler
             return $this->convertSampleDataToCommonFormat(xhprof_sample_disable());
         };
 
-        return true;
+        return $this;
     }
 
     protected function convertSampleDataToCommonFormat(array $sampling_data)
@@ -259,7 +259,7 @@ class LiveProfiler
     {
         if ($this->is_enabled) {
             $this->Logger->warning('can\'t change profiler after profiling started');
-            return false;
+            return $this;
         }
 
         $this->start_callback = function () {
@@ -270,14 +270,14 @@ class LiveProfiler
             return tideways_xhprof_disable();
         };
 
-        return true;
+        return $this;
     }
 
     public function useUprofiler()
     {
         if ($this->is_enabled) {
             $this->Logger->warning('can\'t change profiler after profiling started');
-            return false;
+            return $this;
         }
 
         $this->start_callback = function () {
@@ -288,14 +288,14 @@ class LiveProfiler
             return uprofiler_disable();
         };
 
-        return true;
+        return $this;
     }
 
     public function useSimpleProfiler()
     {
         if ($this->is_enabled) {
             $this->Logger->warning('can\'t change profiler after profiling started');
-            return false;
+            return $this;
         }
 
         $this->start_callback = function () {
@@ -306,7 +306,7 @@ class LiveProfiler
             return \Badoo\LiveProfiler\SimpleProfiler::getInstance()->disable();
         };
 
-        return true;
+        return $this;
     }
 
     /**
