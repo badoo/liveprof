@@ -138,6 +138,10 @@ class LiveProfiler
             return false;
         }
 
+        if (empty($data)) {
+            return false;
+        }
+
         $this->last_profile_data = $data;
         $result = $this->save($this->app, $this->label, $this->datetime, $data);
 

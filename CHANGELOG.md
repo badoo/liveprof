@@ -4,6 +4,13 @@
 
 There are next changes:
 
+## 1.3.4
+
+There are next changes:
+
+- added a memory  usage for SimpleProfiler
+- bug fixes
+
 ## 1.3.3
 
 There are next changes:

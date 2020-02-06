@@ -60,12 +60,15 @@ class SimpleProfiler
         if (!isset($this->methods[$full_method])) {
             $this->methods[$full_method] = [
                 'wt' => 0,
+                'mu' => 0,
                 'ct' => 0,
             ];
         }
 
         $time = (int)(microtime(true) * 1e6);
+        $memory = memory_get_usage();
         $this->methods[$full_method]['wt'] = $time - $this->methods[$full_method]['wt'];
+        $this->methods[$full_method]['mu'] = $memory - $this->methods[$full_method]['mu'];
 
         return true;
     }
@@ -85,8 +88,10 @@ class SimpleProfiler
         $full_method = $this->getFullMethod($tag);
 
         $time = (int)(microtime(true) * 1e6);
+        $memory = memory_get_usage();
         $this->methods[$full_method]['ct']++;
         $this->methods[$full_method]['wt'] = $time - $this->methods[$full_method]['wt'];
+        $this->methods[$full_method]['mu'] = $memory - $this->methods[$full_method]['mu'];
 
         return true;
     }

@@ -53,7 +53,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         $ProfilerMock
             ->setDivider(1)
             ->setStartCallback(function () {
-        });
+            });
 
         $result = $ProfilerMock->start();
         self::assertTrue($result);
@@ -98,7 +98,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         $ProfilerMock
             ->setTotalDivider(1)
             ->setStartCallback(function () {
-        });
+            });
 
         $result = $ProfilerMock->start();
         self::assertTrue($result);
@@ -124,8 +124,8 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         $ProfilerMock
             ->setDataPacker($DataPacker)
             ->setEndCallback(function () {
-            return ['end result'];
-        });
+                return ['end result'];
+            });
 
         $result = $ProfilerMock->end();
         self::assertTrue($result);
@@ -469,7 +469,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         /** @var \Badoo\LiveProfiler\LiveProfiler $ProfilerMock */
         $result = $ProfilerMock->useXhprofSample();
 
-        self::assertTrue($result);
+        self::assertInstanceOf('\Badoo\LiveProfiler\LiveProfiler', $result);
         $start_callback = $this->getProtectedProperty($ProfilerMock, 'start_callback');
         $end_callback = $this->getProtectedProperty($ProfilerMock, 'end_callback');
         self::assertNotEmpty($start_callback);
@@ -502,7 +502,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
             ->setLogger($LoggerMock)
             ->useXhprofSample();
 
-        self::assertFalse($result);
+        self::assertInstanceOf('\Badoo\LiveProfiler\LiveProfiler', $result);
     }
 
     /**
@@ -518,7 +518,8 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         /** @var \Badoo\LiveProfiler\LiveProfiler $ProfilerMock */
         $result = $ProfilerMock->useXhprof();
 
-        self::assertTrue($result);
+        self::assertInstanceOf('\Badoo\LiveProfiler\LiveProfiler', $result);
+
         $start_callback = $this->getProtectedProperty($ProfilerMock, 'start_callback');
         $end_callback = $this->getProtectedProperty($ProfilerMock, 'end_callback');
         self::assertNotEmpty($start_callback);
@@ -551,7 +552,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
             ->setLogger($LoggerMock)
             ->useXhprof();
 
-        self::assertFalse($result);
+        self::assertInstanceOf('\Badoo\LiveProfiler\LiveProfiler', $result);
     }
 
     /**
@@ -567,7 +568,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         /** @var \Badoo\LiveProfiler\LiveProfiler $ProfilerMock */
         $result = $ProfilerMock->useUprofiler();
 
-        self::assertTrue($result);
+        self::assertInstanceOf('\Badoo\LiveProfiler\LiveProfiler', $result);
         $start_callback = $this->getProtectedProperty($ProfilerMock, 'start_callback');
         $end_callback = $this->getProtectedProperty($ProfilerMock, 'end_callback');
         self::assertNotEmpty($start_callback);
@@ -600,7 +601,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
             ->setLogger($LoggerMock)
             ->useUprofiler();
 
-        self::assertFalse($result);
+        self::assertInstanceOf('\Badoo\LiveProfiler\LiveProfiler', $result);
     }
 
     /**
@@ -616,7 +617,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         /** @var \Badoo\LiveProfiler\LiveProfiler $ProfilerMock */
         $result = $ProfilerMock->useTidyWays();
 
-        self::assertTrue($result);
+        self::assertInstanceOf('\Badoo\LiveProfiler\LiveProfiler', $result);
         $start_callback = $this->getProtectedProperty($ProfilerMock, 'start_callback');
         $end_callback = $this->getProtectedProperty($ProfilerMock, 'end_callback');
         self::assertNotEmpty($start_callback);
@@ -649,7 +650,7 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
             ->setLogger($LoggerMock)
             ->useTidyWays();
 
-        self::assertFalse($result);
+        self::assertInstanceOf('\Badoo\LiveProfiler\LiveProfiler', $result);
     }
 
     public function testDetectProfiler()
@@ -662,6 +663,6 @@ class LiveProfilerTest extends \unit\Badoo\BaseTestCase
         /** @var \Badoo\LiveProfiler\LiveProfiler $ProfilerMock */
         $result = $ProfilerMock->detectProfiler();
 
-        self::assertInternalType('bool', $result);
+        self::assertInstanceOf('\Badoo\LiveProfiler\LiveProfiler', $result);
     }
 }

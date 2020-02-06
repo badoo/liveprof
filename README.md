@@ -84,8 +84,12 @@ There is a full list of methods you can use to change options:
     ->setDataPacker($DatePacker) // optional, a class implemented \Badoo\LiveProfiler\DataPackerInterface to convert array into string
     ->setStartCallback($profiler_start_callback) // optional, set it if you use custom profiler
     ->setEndCallback($profiler_profiler_callback) // optional, set it if you use custom profiler
+    ->useXhprof() // optional, force use xhprof as profiler
+    ->useTidyWays() // optional, force use TidyWays as profiler
+    ->useUprofiler() // optional, force use uprofiler as profiler
+    ->useSimpleProfiler() // optional, force use internal profiler
+    ->useXhprofSample() // optional, force use xhprof in sampling mode
     ->start();
-\Badoo\LiveProfiler\LiveProfiler::getInstance()->useXhprofSample(); // optional, force use xhprof in sampling mode
 ```
 
 If you want to change the Label during running (for instance, after you got some information in the router or controller) you can call:
