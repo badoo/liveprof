@@ -4,7 +4,7 @@
 
 There are next changes:
 
-## 1.3.2
+## 1.3.3
 
 There are next changes:
 
