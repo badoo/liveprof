@@ -162,7 +162,7 @@ class LiveProfiler
             return $this->useUprofiler();
         }
 
-        return false;
+        return $this->useSimpleProfiler();
     }
 
     public function useXhprof()
@@ -282,6 +282,24 @@ class LiveProfiler
 
         $this->end_callback = function () {
             return uprofiler_disable();
+        };
+
+        return true;
+    }
+
+    public function useSimpleProfiler()
+    {
+        if ($this->is_enabled) {
+            $this->Logger->warning('can\'t change profiler after profiling started');
+            return false;
+        }
+
+        $this->start_callback = function () {
+            \Badoo\LiveProfiler\SimpleProfiler::getInstance()->enable();
+        };
+
+        $this->end_callback = function () {
+            return \Badoo\LiveProfiler\SimpleProfiler::getInstance()->disable();
         };
 
         return true;

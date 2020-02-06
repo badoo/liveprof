@@ -8,6 +8,12 @@ There are next changes:
 
 There are next changes:
 
+- added SimpleProfiler to use liveprof without any extension
+
+## 1.3.2
+
+There are next changes:
+
 - changed version of doctrine/dbal
 - added php 7.3 support
 
