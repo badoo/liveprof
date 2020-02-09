@@ -27,7 +27,7 @@ System Requirements
 * PHP version 5.4 or later / hhvm version 3.25.0 or later
 * One of [XHProf](http://pecl.php.net/package/xhprof),
      [Uprofiler](https://github.com/FriendsOfPHP/uprofiler) or
-     [Tideways](https://github.com/tideways/php-profiler-extension) to actually profile the data.
+     [Tideways](https://github.com/tideways/php-profiler-extension) to profile and collect the data.
   You can use other profiler which returns data in the follow format:
   ```php
   $data = [
@@ -38,27 +38,31 @@ System Requirements
       ]  
   ];
   ```  
-* Database extension to save profiling results
+* Database extension to save profiling results to the database.
 
 Installation
 ============
 
-* You can install Live Profiler via [Composer](https://getcomposer.org/):
+1. You can install Live Profiler via [Composer](https://getcomposer.org/):
 
 ```bash
 php composer.phar require badoo/liveprof
 ```
 
-* If you use DB mode you need to prepare a database server. You can use any driver described [here](https://www.doctrine-project.org/projects/doctrine-dbal/en/2.8/reference/configuration.html#configuration) or implement the custom one
-* If you use DB mode you need run a script to configure database. This script creates "details" table 
+2a. [save data in database] If you use DB mode you need to prepare a database server. You can use any driver described [here](https://www.doctrine-project.org/projects/doctrine-dbal/en/2.8/reference/configuration.html#configuration) or implement the custom one. You need run a script to configure database. This script creates "details" table: 
 
 ```bash
 LIVE_PROFILER_CONNECTION_URL=mysql://db_user:db_password@db_mysql:3306/Profiler?charset=utf8 php vendor/badoo/liveprof/bin/install.php
 ```
 
-* It's also possible to save profiling result into files. To do it prepare a directory with write permissions.
-* To use API mode you need to visit [liveprof.org](http://liveprof.org/) , sign in and get API key. 
-* Init a profiler before working code in the project entry point (usually public/index.php).
+2b. [save data in files] It's also possible to save profiling result into files. To do it prepare a directory with write permissions.
+
+2c. [send data to demo site] You need to visit [liveprof.org](http://liveprof.org/) , sign in and copy API key.
+
+3. Init a profiler before working code in the project entry point (usually public/index.php).
+
+Usage
+=====
 
 You should add a profiler call before your code to start profiling with default parameters:
 ```php
