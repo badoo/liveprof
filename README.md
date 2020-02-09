@@ -12,6 +12,10 @@ How expensive is function "foo" across all pages, or on a specific page?
 What functions regressed most in the last day/week/month?
 What is the historical trend for execution time of a page/function? and so on.
 
+Here is [a plugin](https://plugins.jetbrains.com/plugin/13767-live-profiler) for PhpStorm to see the method performance directly in IDE.
+
+[liveprof.org](http://liveprof.org/) shows all features and can be used for test purposes.
+
 [![Build Status](https://travis-ci.org/badoo/liveprof.svg?branch=master)](https://travis-ci.org/badoo/liveprof)
 [![codecov](https://codecov.io/gh/badoo/liveprof/branch/master/graph/badge.svg)](https://codecov.io/gh/badoo/liveprof)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/badoo/liveprof/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/badoo/liveprof/?branch=master)
