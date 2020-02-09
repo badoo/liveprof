@@ -49,28 +49,49 @@ Installation
 php composer.phar require badoo/liveprof
 ```
 
-2a. [save data in database] If you use DB mode you need to prepare a database server. You can use any driver described [here](https://www.doctrine-project.org/projects/doctrine-dbal/en/2.8/reference/configuration.html#configuration) or implement the custom one. You need run a script to configure database. This script creates "details" table: 
+2. Prepere a storage for results depends on mode
+
+[save data in database] If you use DB mode you need to prepare a database server. You can use any driver described [here](https://www.doctrine-project.org/projects/doctrine-dbal/en/2.8/reference/configuration.html#configuration) or implement the custom one. You need run a script to configure database. This script creates "details" table: 
 
 ```bash
 LIVE_PROFILER_CONNECTION_URL=mysql://db_user:db_password@db_mysql:3306/Profiler?charset=utf8 php vendor/badoo/liveprof/bin/install.php
 ```
 
-2b. [save data in files] It's also possible to save profiling result into files. To do it prepare a directory with write permissions.
+[save data in files] It's also possible to save profiling result into files. To do it prepare a directory with write permissions.
 
-2c. [send data to demo site] You need to visit [liveprof.org](http://liveprof.org/) , sign in and copy API key.
+[send data to demo site] You need to visit [liveprof.org](http://liveprof.org/) , sign in and copy API key.
 
 3. Init a profiler before working code in the project entry point (usually public/index.php).
 
 Usage
 =====
 
-You should add a profiler call before your code to start profiling with default parameters:
+There is an example of usage a profiler with default parameters:
 ```php
 <?php
 include 'vendor/autoload.php';
 
 \Badoo\LiveProfiler\LiveProfiler::getInstance()->start();
 // Code is here
+```
+
+There is an example how to test Live Profiler without any extension and database. You can use a build-in profiler compatible with XHProf and <a href="http://liveprof.org">liveprof.org</a> as UI:
+```php
+<?php
+include 'vendor/autoload.php';
+
+\Badoo\LiveProfiler\LiveProfiler::getInstance()
+     ->setMode(\Badoo\LiveProfiler\LiveProfiler::MODE_API)
+     ->setApiKey('70366397-97d6-41be-a83c-e9e649c824e1') // a key for guest
+     ->useSimpleProfiler() // Use build-in profiler instead of XHProf or its forks
+     ->setApp('Demo') // Some unique app name
+     ->start();
+     
+// Code is here
+// start a timer before aech inportant method
+\Badoo\LiveProfiler\SimpleProfiler::getInstance()->startTimer(__METHOD__); // any string can be used as a timer tag
+// stop the timer before the end
+\Badoo\LiveProfiler\SimpleProfiler::getInstance()->endTimer(__METHOD__); // any string can be used as a timer tag
 ```
 
 There is a full list of methods you can use to change options:
