@@ -88,9 +88,9 @@ include 'vendor/autoload.php';
      ->start();
      
 // Code is here
-// start a timer before aech inportant method
+// start a timer before each inportant method
 \Badoo\LiveProfiler\SimpleProfiler::getInstance()->startTimer(__METHOD__); // any string can be used as a timer tag
-// stop the timer before the end
+// stop the timer before the end of the method
 \Badoo\LiveProfiler\SimpleProfiler::getInstance()->endTimer(__METHOD__); // any string can be used as a timer tag
 ```
 
