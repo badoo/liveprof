@@ -52,7 +52,9 @@ class LiveProfiler
     protected $is_enabled = false;
     /** @var array */
     protected $last_profile_data = [];
-
+    /** @var array[] */
+    protected $ignored_functions = ['ignored_functions' => []];
+    
     /**
      * LiveProfiler constructor.
      * @param string $connection_string_or_path
@@ -494,6 +496,17 @@ class LiveProfiler
         return $this;
     }
 
+    /**
+     * @param array $ignore
+     * @return $this
+     */
+    public function setIgnoredFunctions($ignore)
+    {
+        $this->ignored_functions = array("ignored_functions" => $ignore);
+
+        return $this;
+    }
+    
     /**
      * @return array
      */
