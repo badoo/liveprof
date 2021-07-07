@@ -113,6 +113,7 @@ There is a full list of methods you can use to change options:
     ->setDataPacker($DatePacker) // optional, a class implemented \Badoo\LiveProfiler\DataPackerInterface to convert array into string
     ->setStartCallback($profiler_start_callback) // optional, set it if you use custom profiler
     ->setEndCallback($profiler_profiler_callback) // optional, set it if you use custom profiler
+    ->setIgnoredFunctions(['call_user_func', 'call_user_func_array']) // optional, set it if you need to exclude some functions
     ->useXhprof() // optional, force use xhprof as profiler
     ->useTidyWays() // optional, force use TidyWays as profiler
     ->useUprofiler() // optional, force use uprofiler as profiler
