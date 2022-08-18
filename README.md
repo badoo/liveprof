@@ -196,7 +196,8 @@ docker build -f DockerfileUseApi -t badoo/liveprof .
 docker run badoo/liveprof
 ```
 
-If your server has php version 7.0 or later it's better to use [Tideways](https://github.com/tideways/php-profiler-extension) as profiler.
+* If your server has php version 7.* it's better to use [Tideways](https://github.com/tideways/php-profiler-extension) as profiler.
+* If your server has php version 8.* it's better to use [Xhprof](https://github.com/longxinH/xhprof) as profiler.
 
 Steps to install tideways extension:
 ```bash
