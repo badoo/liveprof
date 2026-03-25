@@ -366,7 +366,7 @@ class LiveProfiler
      * @param string $api_key
      * @return $this
      */
-    public function setApiKey($api_key)
+    public function setApiKey(#[\SensitiveParameter] $api_key)
     {
         $this->api_key = $api_key;
         return $this;
