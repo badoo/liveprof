@@ -1,4 +1,4 @@
-FROM php:7.3
+FROM php:7.3@sha256:bd6f2dc7a4e4537e927355c94a74c3022911aa504278f5f0fd94016c90dfaecc
 MAINTAINER Timur Shagiakhmetov <timur.shagiakhmetov@corp.badoo.com>
 
 COPY . /app
