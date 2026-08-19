@@ -1,4 +1,4 @@
-FROM hhvm/hhvm:latest
+FROM hhvm/hhvm:latest@sha256:1cc1be0d469a378114112096431145c9fe80612c61ba48e8697097d933147f60
 MAINTAINER Timur Shagiakhmetov <timur.shagiakhmetov@corp.badoo.com>
 
 COPY . /app
